@@ -1,4 +1,6 @@
-type RPS = enum Rock, Paper, Scissors
+import sequtils
+
+type RPS = enum Rock = 1, Paper = 2, Scissors = 3
 type Game = tuple[them: RPS, us: RPS]
 
 var games1: seq[Game]
@@ -10,15 +12,11 @@ while input.readLine(line):
     var them: RPS
     var us1: RPS
     var us2: RPS
-    case line[0]
-    of 'A':
-        them = Rock
-    of 'B':
-        them = Paper
-    of 'C':
-        them = Scissors
-    else:
-        discard
+    them = case line[0]:
+        of 'A': Rock
+        of 'B': Paper
+        of 'C': Scissors
+        else: continue
     case line[2]
     of 'X':
         us1 = Rock
@@ -48,43 +46,7 @@ while input.readLine(line):
     games2.add((them, us2))
 
 proc score(game: Game): int =
-    case game.us:
-    of Rock:
-        result += 1
-        case game.them:
-        of Rock:
-            result += 3
-        of Paper:
-            result += 0
-        of Scissors:
-            result += 6
-    of Paper:
-        result += 2
-        case game.them:
-        of Rock:
-            result += 6
-        of Paper:
-            result += 3
-        of Scissors:
-            result += 0        
-    of Scissors:
-        result += 3
-        case game.them:
-        of Rock:
-            result += 0
-        of Paper:
-            result += 6
-        of Scissors:
-            result += 3
+    return game.us.ord() + [3, 6, 0][(game.us.ord() - game.them.ord() + 3) mod 3]
 
-var total_score = 0
-for game in games1:
-    total_score += game.score()
-
-echo "Part 1: ", total_score
-
-total_score = 0
-for game in games2:
-    total_score += game.score()
-
-echo "Part 2: ", total_score
+echo "Part 1: ", games1.map(score).foldl(a + b)
+echo "Part 2: ", games2.map(score).foldl(a + b)
