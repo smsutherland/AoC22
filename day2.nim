@@ -1,4 +1,5 @@
-import sequtils
+from sequtils import map, foldl
+from math import euclMod
 
 type RPS = enum Rock = 1, Paper = 2, Scissors = 3
 type Game = tuple[them: RPS, us: RPS]
@@ -46,7 +47,7 @@ while input.readLine(line):
     games2.add((them, us2))
 
 proc score(game: Game): int =
-    return game.us.ord() + [3, 6, 0][(game.us.ord() - game.them.ord() + 3) mod 3]
+    return game.us.ord() + [3, 6, 0][euclMod(game.us.ord() - game.them.ord(), 3)]
 
 echo "Part 1: ", games1.map(score).foldl(a + b)
 echo "Part 2: ", games2.map(score).foldl(a + b)
